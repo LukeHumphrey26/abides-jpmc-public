@@ -82,10 +82,10 @@ class MeanRevertingOracle(Oracle):
 
         # Create the time series into which values will be projected and initialize the first value.
         date_range = pd.date_range(
-            self.mkt_open, self.mkt_close, closed="left", freq="N"
+            self.mkt_open, self.mkt_close, inclusive="left", freq="ns"
         )
 
-        s = pd.Series(index=date_range)
+        s = pd.Series(index=date_range, dtype=float)
         r = np.zeros(len(s.index))
         r[0] = r_bar
 

@@ -60,7 +60,7 @@ def build_config(
     mm_window_size="adaptive",
     mm_pov=0.025,
     mm_num_ticks=10,
-    mm_wake_up_freq="60S",
+    mm_wake_up_freq="60s",
     mm_min_order_size=1,
     mm_skew_beta=0,
     mm_price_skew=4,
@@ -112,7 +112,7 @@ def build_config(
     SIGMA_N = r_bar / 100  # observation noise variance
 
     # date&time
-    DATE = int(pd.to_datetime(date).to_datetime64())
+    DATE = pd.to_datetime(date).as_unit("ns").value
     MKT_OPEN = DATE + str_to_ns("09:30:00")
     MKT_CLOSE = DATE + str_to_ns(end_time)
     # These times needed for distribution of arrival times of Noise Agents

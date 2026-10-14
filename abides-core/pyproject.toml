@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abides-core"
+version = "1.0.0+py312"
+description = "ABIDES: Agent-Based Interactive Discrete Event Simulation environment"
+readme = "README.md"
+license = "BSD-3-Clause"
+requires-python = ">=3.12"
+dependencies = ["numpy>=1.26", "pandas>=2.0", "coloredlogs>=15.0"]
+
+[tool.setuptools.packages.find]
+include = ["abides_core*"]

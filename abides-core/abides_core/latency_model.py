@@ -4,7 +4,7 @@ import numpy as np
 
 
 class LatencyModel:
-    """
+    r"""
     LatencyModel provides a latency model for messages in the ABIDES simulation. The
     default is a cubic model as described herein.
 

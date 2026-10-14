@@ -9,7 +9,7 @@ from abides_core.utils import get_wake_time, str_to_ns
 
 
 def test_ou_process():
-    DATE = int(pd.to_datetime("20210205").to_datetime64())
+    DATE = pd.to_datetime("20210205").as_unit("ns").value
     MKT_OPEN = DATE + str_to_ns("09:30:00")
     MKT_CLOSE = DATE + str_to_ns("16:00:00")
 

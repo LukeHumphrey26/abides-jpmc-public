@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abides-gym"
+version = "1.0.0+py312"
+description = "ABIDES: Agent-Based Interactive Discrete Event Simulation environment"
+readme = "README.md"
+license = "BSD-3-Clause"
+requires-python = ">=3.12"
+dependencies = ["abides-core", "abides-markets", "numpy>=1.26", "gymnasium>=0.29"]
+
+[project.optional-dependencies]
+rllib = ["ray[rllib]"]
+
+[tool.setuptools.packages.find]
+include = ["abides_gym*"]

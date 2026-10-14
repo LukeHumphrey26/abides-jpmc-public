@@ -1,7 +1,4 @@
-import json
-
 import numpy as np
-from pomegranate import GeneralMixtureModel
 
 
 order_size = {
@@ -91,8 +88,28 @@ order_size = {
 
 
 class OrderSizeModel:
+    """Mixture-model order sizes, sampled with NumPy.
+
+    Replaces the original pomegranate 0.14 ``GeneralMixtureModel`` (which does not
+    install on Python 3.12). Same mixture as ``order_size`` above: pick a component
+    by weight, then draw from it. ``LogNormalDistribution`` parameters are the
+    (mu, sigma) of the underlying normal; ``NormalDistribution`` parameters are
+    (mean, std). Distributionally equivalent, but NOT draw-for-draw identical to
+    pomegranate for a given seed.
+    """
+
     def __init__(self) -> None:
-        self.model = GeneralMixtureModel.from_json(json.dumps(order_size))
+        dists = order_size["distributions"]
+        self.names = [d["name"] for d in dists]
+        self.params = [tuple(d["parameters"]) for d in dists]
+        w = np.asarray(order_size["weights"], dtype=float)
+        self.weights = w / w.sum()
 
     def sample(self, random_state: np.random.RandomState) -> float:
-        return round(self.model.sample(random_state=random_state))
+        k = random_state.choice(len(self.weights), p=self.weights)
+        a, b = self.params[k]
+        if self.names[k] == "LogNormalDistribution":
+            x = random_state.lognormal(mean=a, sigma=b)
+        else:
+            x = random_state.normal(loc=a, scale=b)
+        return round(x)

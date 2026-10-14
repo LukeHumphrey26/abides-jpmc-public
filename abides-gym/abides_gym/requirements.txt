@@ -1,2 +1,2 @@
-gym==0.18.3
-ray[rllib]==1.5.1
+gymnasium>=0.29
+# optional, for RLlib training scripts: ray[rllib]

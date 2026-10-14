@@ -2,9 +2,9 @@ from copy import deepcopy
 from abc import abstractmethod, ABC
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym.utils import seeding
+from gymnasium.utils import seeding
 
 from abides_core import Kernel, NanosecondTime
 from abides_core.generators import InterArrivalTimeGenerator
@@ -46,7 +46,7 @@ class AbidesGymCoreEnv(gym.Env, ABC):
         self.done: Optional[bool] = None
         self.info: Optional[Dict[str, Any]] = None
 
-    def reset(self):
+    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
         """
         Reset the state of the environment and returns an initial observation.
 
@@ -55,8 +55,10 @@ class AbidesGymCoreEnv(gym.Env, ABC):
         observation (object): the initial observation of the space.
         """
 
+        # gymnasium API: reset(seed=...) re-seeds self.np_random
+        super().reset(seed=seed)
         # get seed to initialize random states for ABIDES
-        seed = self.np_random.randint(low=0, high=2 ** 32, dtype="uint64")
+        seed = int(self.np_random.integers(low=0, high=2**32, dtype="uint64"))
         # instanciate back ground config state
         background_config_args = self.background_config_pair[1]
         background_config_args.update(
@@ -99,9 +101,9 @@ class AbidesGymCoreEnv(gym.Env, ABC):
         state = self.raw_state_to_state(deepcopy(raw_state["result"]))
         # attach kernel
         self.kernel = kernel
-        return state
+        return state, {}
 
-    def step(self, action: int) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
+    def step(self, action: int) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         """
         The agent takes a step in the environment.
 
@@ -159,7 +161,10 @@ class AbidesGymCoreEnv(gym.Env, ABC):
 
         self.info = self.raw_state_to_info(deepcopy(raw_state["result"]))
 
-        return (self.state, self.reward, self.done, self.info)
+        # gymnasium API: (obs, reward, terminated, truncated, info).
+        # All episode ends are reported as `terminated` to preserve the original `done`
+        # semantics; nothing is reported as `truncated`.
+        return (self.state, self.reward, self.done, False, self.info)
 
     def render(self, mode: str = "human") -> None:
         """Renders the environment.
