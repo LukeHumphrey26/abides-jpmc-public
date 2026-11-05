@@ -136,7 +136,7 @@ class Agent:
         # and request that the Kernel write it to disk before terminating.
         if self.log and self.log_to_file:
             df_log = pd.DataFrame(self.log, columns=("EventTime", "EventType", "Event"))
-            df_log.set_index("EventTime", inplace=True)
+            df_log = df_log.set_index("EventTime")
             self.write_log(df_log)
 
     ### Methods for internal use by agents (e.g. bookkeeping).

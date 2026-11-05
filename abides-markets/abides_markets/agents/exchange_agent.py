@@ -282,7 +282,7 @@ class ExchangeAgent(FinancialAgent):
             for symbol in self.oracle.f_log:
                 dfFund = pd.DataFrame(self.oracle.f_log[symbol])
                 if not dfFund.empty:
-                    dfFund.set_index("FundamentalTime", inplace=True)
+                    dfFund = dfFund.set_index("FundamentalTime")
                     self.write_log(dfFund, filename="fundamental_{}".format(symbol))
                     logger.debug("Fundamental archival complete.")
 
